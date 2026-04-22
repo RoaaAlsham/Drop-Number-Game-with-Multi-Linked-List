@@ -3,7 +3,7 @@ a project made as a requirement for Data Structures Programming Course
 
 **Author:** Roaa Alsham - 2421051350
 
-note: GUI is supported in 'gui' branch of this project
+Note: GUI is supported in 'gui' branch of this project
 
 ## 1. Introduction
 
