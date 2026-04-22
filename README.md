@@ -3,6 +3,8 @@ a project made as a requirement for Data Structures Programming Course
 
 **Author:** Roaa Alsham - 2421051350
 
+note: GUI is supported in 'gui' branch of this project
+
 ## 1. Introduction
 
 - **Goal:** The objective of the game is to merge falling tiles of the same number to double their value, continuously creating larger numbers until the grid fills up.
@@ -62,7 +64,7 @@ The game actively monitors the height of every column. The `isGameOver()` method
 <img width="550" height="682" alt="image" src="https://github.com/user-attachments/assets/65b7317e-e487-47c6-85ce-081ef3080f4d" />
 
 
-## 6. Program Output
+## 6. Program Output on Console
 
 ### Initialization
 <img width="383" height="809" alt="image" src="https://github.com/user-attachments/assets/9d832a9d-3657-4872-b630-0522340446f2" />
@@ -73,3 +75,12 @@ The game actively monitors the height of every column. The `isGameOver()` method
 
 ### The final result
 <img width="433" height="349" alt="image" src="https://github.com/user-attachments/assets/032f6022-fa67-436b-9ac2-0c52a1d94e6c" />
+
+## 7. GUI Output
+
+<img width="520" height="899" alt="image" src="https://github.com/user-attachments/assets/c70dc5ea-3f92-4990-8a83-cd5f812a7e0b" />
+
+
+finally:
+
+<img width="521" height="901" alt="image" src="https://github.com/user-attachments/assets/03a2bf68-13a6-4bf0-8aeb-21ccc062f3bb" />
