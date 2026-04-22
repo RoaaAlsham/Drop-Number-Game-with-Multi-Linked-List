@@ -1,25 +1,69 @@
 package com.mycompany.roaaalsham_dropnumbergame;
-/**
- *
- * @author Roaa
- */
 
 public class RoaaAlsham_DropNumberGrid {
 
-    private Node head; // Points to the very first node dropped
+    /**
+     * Implement in the GUI panel; called automatically after every move.
+     */
+    public interface GridChangeListener {
+
+        void onGridChanged();
+    }
+
+    private GridChangeListener listener;
+
+    // ══════════════════════════════════════════════════════════════════════
+    /**
+     * Register the GUI once at startup.
+     */
+    public void setGridChangeListener(GridChangeListener listener) {
+        this.listener = listener;
+    }
+
+    public int getROWS() {
+        return ROWS;
+    }
+
+    public int getCOLS() {
+        return COLS;
+    }
+
+    /**
+     * Snapshot of the current board as a plain 2-D int array. In purpose to
+     * deliver it to GUI layer Cell value == 0 means the cell is empty.
+     */
+    public int[][] getGridSnapshot() {
+        int[][] snap = new int[ROWS][COLS];
+        for (int c = 0; c < COLS; c++) {
+            Node cur = getColumnFloor(c);
+            while (cur != null) {
+                snap[cur.row][cur.col] = cur.value;
+                cur = cur.up;
+            }
+        }
+        return snap;
+    }
+
+    /**
+     * Top-of-stack value for a column (0 if empty).
+     */
+    public int getPeakValue(int col) {
+        Node peak = getColumnPeak(col);
+        return (peak == null) ? 0 : peak.value;
+    }
+
+    private Node head;
     private static final int ROWS = 7;
     private static final int COLS = 5;
 
     // ------------------------------------------------------------------
-    // NAVIGATION — Floor-based routing
+    // NAVIGATION
     // ------------------------------------------------------------------
-    // Finds the lowest block resting in a specific column
     private Node getColumnFloor(int col) {
         if (head == null) {
             return null;
         }
 
-        // 1. Navigate to the absolute bottom-left of the entire grid
         Node cur = head;
         while (cur.down != null) {
             cur = cur.down;
@@ -28,20 +72,18 @@ public class RoaaAlsham_DropNumberGrid {
             cur = cur.left;
         }
 
-        // 2. Walk right across the solid floor to find the target column
         while (cur != null) {
             if (cur.col == col) {
                 return cur;
             }
             if (cur.col > col) {
-                break; // We passed it; column is empty
+                break;
             }
             cur = cur.right;
         }
         return null;
     }
 
-    // Finds the highest stacked block in a column (lowest row index)
     private Node getColumnPeak(int col) {
         Node floor = getColumnFloor(col);
         if (floor == null) {
@@ -64,7 +106,6 @@ public class RoaaAlsham_DropNumberGrid {
             if (isColumnFull(i)) {
                 return true;
             }
-
         }
         return false;
     }
@@ -115,20 +156,15 @@ public class RoaaAlsham_DropNumberGrid {
         int val = block.getValue();
 
         if (isColumnFull(col)) {
-            System.out.println("Column " + col + " is full! Move rejected.");
             return;
         }
 
         Node peak = getColumnPeak(col);
 
         if (peak != null && peak.value == val) {
-            // ── MERGE PATH ──
-            // Double the peak's value in place, then cascade downward
             peak.value *= 2;
             cascadeMerge(peak);
         } else {
-            // ── INSERT PATH ──
-            // Stack upwards: target row is peak's row minus 1
             int targetRow = (peak == null) ? ROWS - 1 : peak.row - 1;
             Node newNode = new Node(val, targetRow, col);
 
@@ -142,21 +178,20 @@ public class RoaaAlsham_DropNumberGrid {
             }
             wireHorizontal(newNode);
         }
-        printGrid();
+
+        // update the scene of GUI
+        if (listener != null) {
+            listener.onGridChanged();
+        }
     }
 
     private void cascadeMerge(Node node) {
-        // Check downwards. If the node below matches the newly doubled value, merge them.
         if (node.down == null || node.value != node.down.value) {
             return;
         }
-
-        // Double the bottom node, prepare to delete the top node
         Node bottomNode = node.down;
         bottomNode.value *= 2;
         removeNode(node);
-
-        // Recurse downwards
         cascadeMerge(bottomNode);
     }
 
@@ -187,9 +222,7 @@ public class RoaaAlsham_DropNumberGrid {
         }
     }
 
-    // ------------------------------------------------------------------
-    // PRINT
-    // ------------------------------------------------------------------
+    //Kept to allow console based tracking of the output (debugging)
     public void printGrid() {
 //        int[][] display = new int[ROWS][COLS];
 //        for (int c = 0; c < COLS; c++) {
@@ -208,9 +241,9 @@ public class RoaaAlsham_DropNumberGrid {
 //        }
 //        System.out.println("-----------------------------------");
 
-        for (int r = 0; r < ROWS; r++) { 
-            for (int c = 0; c < COLS; c++) { 
-                Node node= findNode(r,c);
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                Node node = findNode(r, c);
 
                 if (node != null) {
                     System.out.printf("[%4d]", node.value);
@@ -228,15 +261,13 @@ public class RoaaAlsham_DropNumberGrid {
 
         Node bottom = getColumnFloor(col);
         while (bottom != null) {
-            
-                if (bottom.row == row) {
-                    return bottom;
-                }
-                bottom = bottom.up;
+
+            if (bottom.row == row) {
+                return bottom;
+            }
+            bottom = bottom.up;
         }
         return null;
 
     }
-    
-    
 }

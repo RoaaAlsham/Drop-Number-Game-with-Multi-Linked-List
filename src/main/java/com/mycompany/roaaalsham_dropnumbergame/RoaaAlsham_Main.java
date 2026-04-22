@@ -57,6 +57,7 @@ public class RoaaAlsham_Main {
                     i + 1, block.getValue(), block.getColumn());
 
             game.dropBlock(block);
+            game.printGrid();
             i++;
 
             try {
